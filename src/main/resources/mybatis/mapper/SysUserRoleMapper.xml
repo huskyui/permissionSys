@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.husky.persys.modalur.sys.dao.SysUserRoleMapper">
+    <delete id="deleteCascadeInfo" parameterType="com.husky.persys.modalur.sys.vo.UserRoleVO">
+        delete from sys_user_role
+        <where>
+             <if test="user.userId != -1">
+                user_id = #{user.userId}
+            </if>
+            <if test="roleId != -1">
+                roleId = #{roleId}
+            </if>
+        </where>
+    </delete>
+    
+    <insert id="insertCascadeInfo" parameterType="com.husky.persys.modalur.sys.vo.UserRoleVO">
+        insert into sys_user_role(user_id, role_id) VALUES (#{user.userId},#{roleId})
+    </insert>
+</mapper>

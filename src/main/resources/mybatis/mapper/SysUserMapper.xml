@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.husky.persys.modalur.sys.dao.SysUserMapper">
+    <insert id="insert" parameterType="com.husky.persys.modalur.sys.entity.SysUser">
+        insert into sys_user(username,password,salt,email,mobile,status,create_user_id,create_time)
+                values (#{username},#{password},#{salt},#{email},#{mobile},#{status},
+                        #{createUser.userId},#{createTime})
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        delete from sys_user where user_id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.husky.persys.modalur.sys.entity.SysUser">
+    update sys_user set username=#{username},password=#{password},salt=#{salt},email=#{email},
+        mobile=#{mobile},status=#{status},create_user_id=#{createUser.userId},create_time=#{createTime}
+        where user_id = #{userId}
+    </update>
+
+    <resultMap id="sysUser" type="com.husky.persys.modalur.sys.entity.SysUser">
+        <result column="user_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="salt" property="salt"/>
+        <result column="mobile" property="mobile"/>
+        <result column="email" property="email"/>
+        <result column="status" property="status"/>
+        <association property="createUser" javaType="com.husky.persys.modalur.sys.entity.SysUser">
+            <result column="create_user_id" property="userId"/>
+        </association>
+        <collection property="sysRoles" ofType="com.husky.persys.modalur.sys.entity.SysRole" column="user_id"
+                    select="com.husky.persys.modalur.sys.dao.SysRoleMapper.findById"/>
+
+
+    </resultMap>
+
+    <select id="findByName" parameterType="string" resultMap="sysUser">
+        select * from sys_user where username = #{username}
+    </select>
+
+    <select id="findById" parameterType="int" resultMap="sysUser">
+        select * from sys_user where user_id = #{id}
+    </select>
+
+    <select id="findAll" parameterType="com.husky.persys.common.utils.PageInfo"  resultMap="sysUser">
+        select * from sys_user limit #{start},#{size}
+    </select>
+
+
+    <select id="count" resultType="int">
+        select count(0) from sys_user
+    </select>
+
+</mapper>

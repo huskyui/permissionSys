@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.husky.persys.modalur.sys.dao.SysRoleMapper">
+    
+    <select id="insert" parameterType="com.husky.persys.modalur.sys.entity.SysRole">
+        insert into sys_role(role_name, remark, create_user_id, create_time) VALUES
+            (#{roleName},#{remark},#{createUser.userId},#{createTime})
+    </select>
+
+    <delete id="delete" parameterType="int">
+        delete from sys_role where role_id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.husky.persys.modalur.sys.entity.SysRole">
+        update sys_role
+        set role_name = #{roleName},remark = #{remark},createUser = #{createUser.userId},createTime = #{createTime}
+        where role_id = #{roleId}
+    </update>
+    <resultMap id="sysRole" type="com.husky.persys.modalur.sys.entity.SysRole">
+        <result column="role_id" property="roleId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="remark" property="remark"/>
+        <result property="createTime" column="create_time"/>
+        <association property="createUser" javaType="com.husky.persys.modalur.sys.entity.SysUser">
+            <result property="userId" column="create_user_id"/>
+        </association>
+        <collection property="sysPerms" ofType="com.husky.persys.modalur.sys.entity.SysPerm" column="role_id"
+                    select="com.husky.persys.modalur.sys.dao.SysPermMapper.findByRoleId"/>
+    </resultMap>
+
+    <select id="findById" parameterType="int" resultMap="sysRole">
+        select * from sys_role where role_id = #{id}
+    </select>
+
+    <select id="findAll" parameterType="com.husky.persys.common.utils.PageInfo" resultMap="sysRole">
+        select * from sys_role limit #{start},#{size}
+    </select>
+
+    <select id="findByUserId" parameterType="int" resultMap="sysRole">
+        select sr.* from sys_role sr join sys_user_role sur on sr.role_id = sur.role_id where sur.user_id = #{id}
+    </select>
+    
+    <select id="count" resultType="int">
+        select count(0)
+        from sys_role
+    </select>
+
+</mapper>
